@@ -7,27 +7,29 @@ HTTPS = require('ssl.https')
 ----config----
 local bot_api_key = ""
 local BASE_URL = "https://api.telegram.org/bot"..bot_api_key
+local BASE_FOLDER = ""
 local start = [[
-Hi i can help you to change your picture to sticker or inverse
-  You can find my source in Github.com/Iamjavid
+*Hi* i can help you to change your *picture to sticker* or _inverse_
 
-  My command list :
+  *My command list :*
   1 - /start
   2 - /help
-
-  My action list :
-  1 - send me a photo , i will send you that picture as a sticker
-  2 - send me a sticker , i will send you that sticker as a photo
-
-
-base on Lua - Developer : @Iamjavid
-source : https://Github.com/Iamjavid/sticker_bot
+  
+  *My action list :*
+  1 - _send me a photo , i will send you that picture as a sticker_
+  2 - _send me a sticker , i will send you that sticker as a photo_
+  
+*base on Lua - Developer* : @Iamjavid
+source : [click here](https://Github.com/Iamjavid/sticker_bot)
 ]]
 
+-------
 
-function is_admin(msg)
+----utilites----
+
+function is_admin(msg)-- Check if user is admin or not
   local var = false
-  local admins = {}
+  local admins = {}-- put your id here
   for k,v in pairs(admins) do
     if msg.from.id == v then
       var = true
@@ -52,12 +54,12 @@ function sendRequest(url)
 
 end
 
-function getMe()
+function getMe()--https://core.telegram.org/bots/api#getfile
     local url = BASE_URL .. '/getMe'
   return sendRequest(url)
 end
 
-function getUpdates(offset)
+function getUpdates(offset)--https://core.telegram.org/bots/api#getupdates
 
   local url = BASE_URL .. '/getUpdates?timeout=20'
 
@@ -108,7 +110,7 @@ forwardMessage = function(chat_id, from_chat_id, message_id)
 
 end
 
-function sendMessage(chat_id, text, disable_web_page_preview, reply_to_message_id, use_markdown)
+function sendMessage(chat_id, text, disable_web_page_preview, reply_to_message_id, use_markdown)--https://core.telegram.org/bots/api#sendmessage
 
 	local url = BASE_URL .. '/sendMessage?chat_id=' .. chat_id .. '&text=' .. URL.escape(text)
 
@@ -127,7 +129,7 @@ function sendMessage(chat_id, text, disable_web_page_preview, reply_to_message_i
 	return sendRequest(url)
 
 end
-function sendDocument(chat_id, document, reply_to_message_id)
+function sendDocument(chat_id, document, reply_to_message_id)--https://github.com/topkecleon/otouto/blob/master/bindings.lua
 
 	local url = BASE_URL .. '/sendDocument'
 
@@ -140,7 +142,7 @@ function sendDocument(chat_id, document, reply_to_message_id)
 	return
 
 end
-function download_to_file(url, file_name, file_path)
+function download_to_file(url, file_name, file_path)--https://github.com/yagop/telegram-bot/blob/master/bot/utils.lua
   print("url to download: "..url)
 
   local respbody = {}
@@ -166,11 +168,12 @@ function download_to_file(url, file_name, file_path)
   file:close()
   return file_path
 end
+--------
 
 function bot_run()
 	bot = nil
 
-	while not bot do
+	while not bot do -- Get bot info
 		bot = getMe()
 	end
 
@@ -189,38 +192,43 @@ end
 
 function msg_processor(msg)
 	if msg.new_chat_participant or msg.new_chat_title or msg.new_chat_photo or msg.left_chat_participant then return end
-	 if msg.audio or msg.document or msg.video or msg.voice then return end
-	  if msg.date < os.time() - 5 then
-		    return
+	if msg.audio or msg.document or msg.video or msg.voice then return end -- Admins only !
+	if msg.date < os.time() - 5 then -- Ignore old msgs
+		return
     end
 
   if msg.sticker then
-    local matches = { (msg.sticker) }
-          file = msg.sticker.file_id
-	  local url = BASE_URL .. '/getFile?file_id='..file
-	  filename = "sticker.png"
-	  local res = HTTPS.request(url)
-	  local jres = JSON.decode(res)
-	  file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
-	  sendPhoto(msg.chat.id, file)
-  elseif msg.photo then
-  	   filename = "photo.jpg"
-	   file = msg.photo[3].file_id
-	   local url = BASE_URL .. '/getFile?file_id='..file
-	   local res = HTTPS.request(url)
-	   local jres = JSON.decode(res)
-           local matches = { (msg.photo) }
-	   file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
-	   sendSticker(msg.chat.id, file)
-if msg.text then return end
-  elseif msg.text:match("^/[sS]tart") or msg.text:match("^/[Hh]elp") then
-      sendMessage(msg.chat.id, start, true, false, true)
-      return end
-end
+  local matches = { (msg.sticker) }
+	file = msg.sticker.file_id
+	local url = BASE_URL .. '/getFile?file_id='..file
+	local res = HTTPS.request(url)
+	local jres = JSON.decode(res)
+	filename = "sticker.png"
+	file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
+	sendPhoto(msg.chat.id, file)
 
-bot_run()
-while is_running do
-	local response = getUpdates(last_update+1)
+  elseif msg.photo then
+	local matches = { (msg.photo) }
+	file = msg.photo[3].file_id
+	local url = BASE_URL .. '/getFile?file_id='..file
+	local res = HTTPS.request(url)
+	local jres = JSON.decode(res)
+	filename = "photo.jpg"
+	file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
+	sendSticker(msg.chat.id, file)
+
+  if msg.text then return end
+
+
+elseif msg.text:match("^/[sS]tart") or msg.text:match("^/[Hh]elp") then
+ sendMessage(msg.chat.id, start, true, false, true)
+
+return end
+
+end
+bot_run() -- Run main function
+while is_running do -- Start a loop witch receive messages.
+	local response = getUpdates(last_update+1) -- Get the latest updates using getUpdates method
 	if response then
 		for i,v in ipairs(response.result) do
 			last_update = v.update_id
@@ -232,4 +240,3 @@ while is_running do
 
 end
 print("Bot halted")
- --- Thanks to @imandaneshi because base design 
