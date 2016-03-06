@@ -7,7 +7,6 @@ HTTPS = require('ssl.https')
 ----config----
 local bot_api_key = ""
 local BASE_URL = "https://api.telegram.org/bot"..bot_api_key
-local BASE_FOLDER = ""
 local start = [[
 Hi i can help you to change your picture to sticker or inverse
   You can find my source in Github.com/Iamjavid
@@ -197,20 +196,20 @@ function msg_processor(msg)
 
   if msg.sticker then
     local matches = { (msg.sticker) }
-	  file = msg.sticker.file_id
+          file = msg.sticker.file_id
 	  local url = BASE_URL .. '/getFile?file_id='..file
+	  filename = "sticker.png"
 	  local res = HTTPS.request(url)
 	  local jres = JSON.decode(res)
-	  filename = "sticker.png"
 	  file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
 	  sendPhoto(msg.chat.id, file)
   elseif msg.photo then
-	   local matches = { (msg.photo) }
+  	   filename = "photo.jpg"
 	   file = msg.photo[3].file_id
 	   local url = BASE_URL .. '/getFile?file_id='..file
 	   local res = HTTPS.request(url)
 	   local jres = JSON.decode(res)
-	   filename = "photo.jpg"
+           local matches = { (msg.photo) }
 	   file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
 	   sendSticker(msg.chat.id, file)
 if msg.text then return end
@@ -233,3 +232,4 @@ while is_running do
 
 end
 print("Bot halted")
+ --- Thanks to @imandaneshi because base design 
