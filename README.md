@@ -1,7 +1,7 @@
 # sticker bot
 sticker bot help you to convert your photo to sticker or inverse
-base on lua - use otouto function - ###TELEGRAM BOT
-
+base on lua - use otouto function - TELEGRAM BOT
+thanks to [iman daneshi](https://telegram.me/imandaneshi) for bot.lua
 # commands & action 
 
  **sticker to photo**
