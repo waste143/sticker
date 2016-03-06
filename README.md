@@ -1,7 +1,7 @@
 # sticker bot
 sticker bot help you to convert your photo to sticker or inverse
 base on lua - use otouto function - TELEGRAM BOT
-thanks to [iman daneshi](https://telegram.me/imandaneshi) for bot.lua
+
 # commands & action 
 
  **sticker to photo**
@@ -32,10 +32,6 @@ git clone https://github.com/iamjavid/sticker_bot.git
 cd sticker_bot
 
 ```
-
-Then install the bot with
-
-`lua bot.lua`
 
 enter bot token in the bot.lua
 
