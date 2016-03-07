@@ -6,11 +6,11 @@ base on lua - use otouto function - TELEGRAM BOT
 
  **sticker to photo**
 
-`just send a sticker`
+`send a sticker , will convert to photo`
 
  **photo to sticker**
 
-`just send a photo`
+`send a photo , will convert to sticker`
 
  **/start** & **/help** 
  
@@ -23,7 +23,8 @@ base on lua - use otouto function - TELEGRAM BOT
 sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev libevent-dev make unzip git redis-server g++ libjansson-dev libpython-dev expat libexpat1-dev
 
 ```
-`sudo apt-get install lua-socket` & `sudo apt-get install lua-sec`
+`sudo apt-get install lua-socket` 
+`sudo apt-get install lua-sec`
 
 ```
 git clone https://github.com/iamjavid/sticker_bot.git
