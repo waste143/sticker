@@ -196,18 +196,7 @@ function msg_processor(msg)
 	if msg.date < os.time() - 5 then -- Ignore old msgs
 		return
     end
-
-  if msg.sticker then
-  local matches = { (msg.sticker) }
-	file = msg.sticker.file_id
-	local url = BASE_URL .. '/getFile?file_id='..file
-	local res = HTTPS.request(url)
-	local jres = JSON.decode(res)
-	filename = "sticker.png"
-	file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
-	sendPhoto(msg.chat.id, file)
-
-  elseif msg.photo then
+  if msg.photo then
 	local matches = { (msg.photo) }
 	file = msg.photo[3].file_id
 	local url = BASE_URL .. '/getFile?file_id='..file
@@ -216,13 +205,18 @@ function msg_processor(msg)
 	filename = "photo.jpg"
 	file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
 	sendSticker(msg.chat.id, file)
-
+  elseif msg.sticker then
+  local matches = { (msg.sticker) }
+	file = msg.sticker.file_id
+	local url = BASE_URL .. '/getFile?file_id='..file
+	local res = HTTPS.request(url)
+	local jres = JSON.decode(res)
+	filename = "sticker.png"
+	file = download_to_file("https://api.telegram.org/file/bot"..bot_api_key.."/"..jres.result.file_path, filename)
+	sendPhoto(msg.chat.id, file)
   if msg.text then return end
-
-
-elseif msg.text:match("^/[sS]tart") or msg.text:match("^/[Hh]elp") then
- sendMessage(msg.chat.id, start, true, false, true)
-
+    elseif msg.text:match("^/[Hh]elp") or msg.text:match("^/[sS]tart") then
+    sendMessage(msg.chat.id, start, true, false, true)
 return end
 
 end
