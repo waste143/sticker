@@ -19,9 +19,7 @@ local start = [[
   1 - _send me a photo , i will send you that picture as a sticker_
   2 - _send me a sticker , i will send you that sticker as a photo_
   
-*base on Lua - Developer* : @Iamjavid
-source : [click here](https://Github.com/Iamjavid/sticker_bot)
-]]
+*base on Lua - Developer* : @FuckUp
 
 -------
 
